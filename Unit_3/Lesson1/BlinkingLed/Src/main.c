@@ -33,17 +33,35 @@
 
 #define MAN_2BITS(REG,BIT,VAL)   (REG = (REG&(~(3<<BIT))) | (VAL << BIT ))
 
+#define __IO volatile unsigned int
+
+typedef struct
+{
+	__IO MODER    ;
+	__IO _OTYPER  ;
+	__IO OSPEEDR  ;
+	__IO PUPDR    ;
+	__IO IDR      ;
+	__IO ODR      ;
+	__IO BSRR     ;
+	__IO LCKR     ;
+	__IO AFRL     ;
+	__IO AFRH     ;
+}TS_GPIOx;
+
+#define GPIO_D   ((volatile TS_GPIOx *) PORT_D_BASE)
+
 int main(void)
 {
 	volatile unsigned long int i = 0 ;
 	SET_BIT(RCC_AHB1ENR,3)  ;
-	MAN_2BITS(GPIOD_MODER,26,1) ;
+	MAN_2BITS(GPIO_D->MODER,26,1) ;
 	while(1)
 	{
-		SET_BIT(GPIOD_ODR,13) ;
-		for(i = 0 ; i <= 100000 ; i++ ) ;
-		CLR_BIT(GPIOD_ODR,13) ;
-		for(i = 0 ; i <= 100000 ; i++ ) ;
+		SET_BIT(GPIO_D->ODR,13) ;
+		for(i = 0 ; i <= 500000 ; i++ ) ;
+		CLR_BIT(GPIO_D->ODR,13) ;
+		for(i = 0 ; i <= 500000 ; i++ ) ;
 	}
 
 }
